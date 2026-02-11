@@ -39,3 +39,8 @@
 
 # debug information files
 *.dwo
+/RedactBreaker
+*.user
+/.vs
+/data/output
+data/samples/CASO_2025_003_CONFIDENCIAL.pdf
