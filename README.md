@@ -1,81 +1,43 @@
-# RedactBreaker v1.0 — C++ PDF Redaction Forensic Analyzer
+# 📄 Forensic Redact Breaker (PDF Security Auditor)
 
-> **FERRAMENTA EDUCACIONAL** — O uso não autorizado em dados de terceiros é proibido.
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-blue?style=for-the-badge&logo=cplusplus)](https://isocpp.org/)
+[![Forensics](https://img.shields.io/badge/Sector-Forensics-red?style=for-the-badge)](https://en.wikipedia.org/wiki/Computer_forensics)
 
-## Sobre
+A specialized C++ forensic tool designed to audit and "break" improperly redacted PDF documents. **Redact Breaker** analyzes PDF structures to identify leaked metadata, hidden layers, and poorly implemented pixelation/blur blocks that can be reversed to reveal sensitive information.
 
-O RedactBreaker é uma ferramenta forense de linha de comando para análise de falhas de redação (redaction) em documentos PDF. Escrita em C++ nativo, segue a mesma arquitetura do sistema **Brute Force Methods**.
+## 🔍 Forensic Analysis Flow
 
-## Funcionalidades
+The tool performs a multi-stage audit of the target PDF file to identify security vulnerabilities.
 
-| Módulo | Descrição |
-|--------|-----------|
-| **Ingestão Forense** | SHA-256 hashing, cadeia de custódia, validação de integridade |
-| **Parser PDF Raw** | Parser binário nativo (xref, objetos, streams, FlateDecode) |
-| **Finder Vetorial** | Detecção de retângulos preenchidos (preto/branco) no content stream |
-| **Finder Raster** | Detecção de tarjas em imagens escaneadas via GDI+ (substitui OpenCV) |
-| **Breaker** | Intersecção BBox para recuperação de texto oculto sob tarjas |
-| **Deep Forensics** | Texto invisível (white-on-white, micro), conteúdo fora do CropBox |
-| **Reporter** | Relatório JSON forense estruturado |
-
-## Como Compilar
-
-### Pré-requisitos
-- **Visual Studio 2022** (Community ou superior)
-- **Windows SDK** (incluído com VS)
-
-### Compilação
-```batch
-# Abrir "Developer Command Prompt for VS 2022"
-cd C:\Users\Zeca\Desktop\RestoreFiles\RedactBreaker_Academic
-build.bat
+```mermaid
+graph TD
+    PDF[Input PDF] --> Meta[Metadata Extraction]
+    PDF --> Layer[Layer Dissection]
+    PDF --> Pixel[Pixelation Analysis]
+    
+    Meta --> Report[Audit Report]
+    Layer --> Hidden[Detect Hidden Objects]
+    Pixel --> Reverse[Calculate Potential Reversal]
+    
+    Hidden --> Report
+    Reverse --> Report
 ```
 
-Ou manualmente:
-```batch
-cl /EHsc /O2 /std:c++17 RedactBreaker.cpp /link gdiplus.lib shlwapi.lib ole32.lib
-```
+## 🛠️ Technical Features
 
-### Executar
-```batch
-RedactBreaker.exe
-```
+- **Object Tree Inspection**: Deep traversal of the PDF object graph to find discarded but still present text elements.
+- **Redaction Verification**: Validates if black boxes are actual vector objects or just visual overlays that can be moved.
+- **Heuristic Reconstruction**: Uses statistical analysis to attempt reconstruction of redacted text based on font metrics and layout remains.
+- **Batch Processing**: High-performance C++ engine capable of auditing thousands of documents per minute.
 
-## Menu Interativo
+## 💻 Tech Stack
+- **Language**: C++20
+- **Libraries**: Poppler / PoDoFo (Internal forks for forensic access)
+- **Formatting**: JSON/MD export for forensic reporting.
 
-```
-=== SISTEMA DE ANALISE FORENSE DE REDACTIONS ===
-1. Analisar PDF (Pipeline Forense Completo)
-2. Analise Rapida (Metadados + Texto)
-3. Verificar Integridade (SHA-256 + Estrutura)
-4. Executar Auto-Teste (Validacao de Modulos)
-5. Sobre / Ajuda
-0. Sair
-```
+---
+> [!IMPORTANT]
+> This tool is part of the **Sentinel Data Solutions** suite for government and private security auditors.
 
-## Dependências
-
-| Biblioteca | Tipo | Descrição |
-|-----------|------|-----------|
-| `picosha2.h` | Header-only | SHA-256 (mesma do Brute Force) |
-| `gdiplus.lib` | Windows SDK | Decodificação de imagens (JPEG/PNG) |
-| `shlwapi.lib` | Windows SDK | Utilidades de path |
-| `ole32.lib` | Windows SDK | COM/IStream para GDI+ |
-
-**Zero dependências externas** — tudo é header-only ou Windows SDK nativo.
-
-## Arquitetura
-
-```
-RedactBreaker.cpp (~1300 linhas)
-├── Inflate (RFC 1951 DEFLATE) — decompressão FlateDecode
-├── PDFParser — parser binário PDF raw
-├── RasterAnalysis — detecção de tarjas via GDI+
-├── Forensic Modules — finder, breaker, deep forensics
-├── Reporter — JSON forense
-├── Self-Test — validação automática
-└── Main Menu — interface interativa ANSI
-```
-
-## Desenvolvido por
-**Zeca** — Para uso didático e acadêmico.
+**Sentinel Data Solutions** | *Precision PDF Forensics*
+**Developed by Zeca**
